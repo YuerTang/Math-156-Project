@@ -36,10 +36,5 @@ class PoseDataset(Dataset):
         return image, target
     
 
-dataset = PoseDataset(annotation_file='KingsCollege/dataset_train.txt', root_dir='KingsCollege')
-loader = torch.utils.data.DataLoader(dataset, batch_size=32, shuffle=True)
 
-for images, targets in loader:
-    print(images.shape)  # [8, 3, 224, 224]
-    print(targets.shape) # [8, 7]
 
