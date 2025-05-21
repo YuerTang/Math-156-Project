@@ -9,7 +9,7 @@ class PoseDataset(Dataset):
         self.annotations = []
         with open(annotation_file, 'r') as f:
             for i, line in enumerate(f):
-              if i < 3 or i > 10:
+              if i < 3:
                 continue
 
               parts = line.strip().split()
