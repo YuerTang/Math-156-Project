@@ -10,7 +10,7 @@ data:
 model:
   type: 'models.resnet_attention.ResNetCBAM'
   params:
-    block_name: 'models.resnet_attention.BasicBlockWithCBAM'
+    block_name: 'models.BasicBlockWithCBAM'
     layers: [2, 2, 2, 2]  # ResNet18-like
     num_outputs: 7
 

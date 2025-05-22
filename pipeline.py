@@ -93,10 +93,6 @@ class Trainer:
         module_path, class_name = model_cfg['type'].rsplit('.', 1)
         module = importlib.import_module(module_path)
         model_class = getattr(module, class_name)
-        # print(model_cfg.get('params', {}))
-        # print(type(model_cfg.get('params', {})))
-        # for k,v in model_cfg.get('params', {}).items():
-        #     print(k,v, type(v))
         return model_class(**model_cfg.get('params', dict()))
     
     def criterion(self, outputs, labels):
