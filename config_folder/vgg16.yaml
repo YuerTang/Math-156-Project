@@ -1,7 +1,7 @@
 output_dir: 'experiments'  # Base directory for experiment outputs
 
 data:
-  data_dir: '/home/andrea/git/UCLA/UCLA_MATH156_Project/KingsCollege'
+  data_dir: '/Users/yuertang/Downloads/KingsCollege'
   train_file: 'dataset_train.txt'
   val_file: 'dataset_test.txt'  # Optional
   batch_size: 64
@@ -30,4 +30,4 @@ loss:
 # data_normalization: # Won't do this just yet
 
 epochs: 50
-device: 'cuda'  # 'cuda' or 'cpu'
+device: 'cpu'  # 'cuda' or 'cpu'
