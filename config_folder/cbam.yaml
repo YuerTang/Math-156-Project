@@ -10,7 +10,7 @@ data:
 model:
   type: 'models.resnet_attention.ResNetCBAM'
   params:
-    block: 'models.resnet_attention.BasicBlockWithCBAM'
+    block_name: 'models.resnet_attention.BasicBlockWithCBAM'
     layers: [2, 2, 2, 2]  # ResNet18-like
     num_outputs: 7
 
@@ -31,5 +31,5 @@ loss:
   type: 'MSELoss'
   beta: 5.0
 
-epochs: 100
+epochs: 50
 device: 'cuda'  # 'cuda' or 'cpu'

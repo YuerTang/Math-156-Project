@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from data_preparation import PoseDataset
+import importlib
 KERNAL_SIZE = 7
 
 # Channel Attention Module
@@ -88,8 +89,13 @@ class BasicBlockWithCBAM(nn.Module):
         return out
 
 class ResNetCBAM(nn.Module):
-    def __init__(self, block, layers, num_outputs=7):
+    def __init__(self, block_name, layers, num_outputs=7):
         super().__init__()
+
+        block_path, block_name = block_name.rsplit('.', 1)
+        block = importlib.import_module(block_path)
+        block_class = getattr(block, block_name)
+
         self.in_planes = 64
 
         self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
@@ -97,13 +103,13 @@ class ResNetCBAM(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
-        self.layer1 = self._make_layer(block, 64,  layers[0])
-        self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
-        self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
-        self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
+        self.layer1 = self._make_layer(block_class, 64,  layers[0])
+        self.layer2 = self._make_layer(block_class, 128, layers[1], stride=2)
+        self.layer3 = self._make_layer(block_class, 256, layers[2], stride=2)
+        self.layer4 = self._make_layer(block_class, 512, layers[3], stride=2)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(512 * block.expansion, num_outputs)
+        self.fc = nn.Linear(512 * block_class.expansion, num_outputs)
 
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None

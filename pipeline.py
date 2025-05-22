@@ -9,6 +9,7 @@ from pathlib import Path
 import importlib
 from data_preparation import PoseDataset
 from tqdm import tqdm
+import ast
 
 class Trainer:
     def __init__(self, config_path):
@@ -92,7 +93,11 @@ class Trainer:
         module_path, class_name = model_cfg['type'].rsplit('.', 1)
         module = importlib.import_module(module_path)
         model_class = getattr(module, class_name)
-        return model_class(**model_cfg.get('params', {}))
+        # print(model_cfg.get('params', {}))
+        # print(type(model_cfg.get('params', {})))
+        # for k,v in model_cfg.get('params', {}).items():
+        #     print(k,v, type(v))
+        return model_class(**model_cfg.get('params', dict()))
     
     def criterion(self, outputs, labels):
         # Normalize the quaternion component of the output
