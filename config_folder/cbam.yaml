@@ -8,7 +8,7 @@ data:
   num_workers: 4
 
 model:
-  type: 'models.resnet_attention.ResNetCBAM'
+  type: 'models.ResNetCBAM'
   params:
     block_name: 'models.BasicBlockWithCBAM'
     layers: [2, 2, 2, 2]  # ResNet18-like
