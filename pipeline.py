@@ -10,6 +10,7 @@ import importlib
 from data_preparation import PoseDataset
 from tqdm import tqdm
 import ast
+import numpy as np
 
 class Trainer:
     def __init__(self, config_path):
@@ -48,11 +49,25 @@ class Trainer:
         # Setup model
         self.model = self._get_model()
         self.model = self.model.to(self.device)
+
+
+
         
+        # Modification
+        # Setup loss
+        self.loss_fnc = self._get_loss()
+
+
+
         # Setup optimizer
         optim_cfg = self.config['optimizer']
         self.optimizer = getattr(torch.optim, optim_cfg['type'])(
-            self.model.parameters(), **optim_cfg['params']
+            
+            # modification:
+            list(self.model.parameters()) + list(self.loss_fnc.parameters()), 
+
+
+            **optim_cfg['params']
         )
         
         # Setup scheduler
@@ -65,9 +80,9 @@ class Trainer:
             pass
         
         # Setup loss
-        loss_cfg = self.config['loss']
-        self.beta = loss_cfg.get('beta', 5.0)
-        self.loss_fnc = getattr(nn, loss_cfg['type'])()
+        # loss_cfg = self.config['loss']
+        # self.beta = loss_cfg.get('beta', 5.0)
+        # self.loss_fnc = getattr(nn, loss_cfg['type'])()
     
     def _get_data_loader(self, data_cfg, split):
         file_key = f'{split}_file'
@@ -95,9 +110,31 @@ class Trainer:
         model_class = getattr(module, class_name)
         return model_class(**model_cfg.get('params', dict()))
     
+
+
+
+    # Modification
+    # Add a new function to get loss module
+    def _get_loss(self):
+        loss_cfg = self.config['loss']
+        module_path, class_name = loss_cfg['type'].rsplit('.', 1)
+        module = importlib.import_module(module_path)
+        loss_class = getattr(module, class_name)
+        return loss_class(**loss_class.get('params', dict()))
+    
+
+
+
+    
+    # Modification
     def criterion(self, outputs, labels):
         # Normalize the quaternion component of the output
-        return self.loss_fnc(labels[:,:3], outputs[:,:3]) + self.beta * self.loss_fnc(labels[:,3:], F.normalize(outputs[:,3:]))
+        # return self.loss_fnc(labels[:,:3], outputs[:,:3]) + self.beta * self.loss_fnc(labels[:,3:], F.normalize(outputs[:,3:]))
+        return self.loss_fnc(outputs, labels)
+    
+
+
+
 
     def train_epoch(self):
         self.model.train()
@@ -142,6 +179,10 @@ class Trainer:
         print(self.config['model'].get('params', None))
 
         epochs = self.config.get('epochs', 100)
+        min_delta = self.config.get('min_delta', 0.001)
+        patience = self.config.get("patience", 5)
+        avg_validation_loss = 0
+
         for epoch in range(epochs):
             train_loss = self.train_epoch()
             val_loss = self.validate()
@@ -169,6 +210,25 @@ class Trainer:
                 self.scheduler.step(val_loss if val_loss is not None else train_loss)
                 pass
             pass
+            
+
+
+            # Modification 
+            # Early Stopping
+            avg_validation_loss = np.mean(self.history['val_loss'])
+
+            if avg_validation_loss < best_val_loss - min_delta:
+                best_val_loss = avg_validation_loss
+                epochs_no_improve = 0
+            else:
+                epochs_no_improve += 1
+
+            if epochs_no_improve == patience:
+                print(f"Early stopping at epoch {epoch + 1}")
+                break
+
+            
+
         return self.model, self.history
                 
     def save_model(self, path):
