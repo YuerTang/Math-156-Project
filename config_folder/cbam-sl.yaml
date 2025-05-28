@@ -12,7 +12,8 @@ model:
   params:
     block_name: 'models.BasicBlockWithCBAM'
     layers: [2, 2, 2, 2]  # ResNet18-like
-    num_outputs: 7
+    pos_dim: 3
+    orien_dim: 4
 
 optimizer:
   type: 'Adam'
@@ -31,7 +32,7 @@ loss:
   type: 'utils.StaticLoss'
   params:
     beta: 3.0
-    loss: 'torch.nn.MSELoss'
+    type: 'torch.nn.MSELoss'
 
 epochs: 50
 device: 'cuda'  # 'cuda' or 'cpu'

@@ -202,7 +202,9 @@ class Trainer:
             self._save_history()
             
             # Save model weights after each epoch
-            self.save_model(self.experiment_dir / f"model_epoch_{epoch+1}.pt")
+            # if epoch+1 % 50 == 0:
+            #     self.save_model(self.experiment_dir / f"model_epoch_{epoch+1}.pt")
+            #     pass
             
             # Log progress
             log_msg = f"Epoch {epoch+1}/{epochs}: Train Loss = {train_loss:.4f}"
@@ -230,7 +232,9 @@ class Trainer:
             #     print(f"Early stopping at epoch {epoch + 1}")
             #     break
 
-            
+            pass
+        
+        self.save_model(self.experiment_dir / f"model_epoch_{epochs}.pt")
 
         return self.model, self.history
                 
