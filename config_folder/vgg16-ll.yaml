@@ -1,0 +1,37 @@
+output_dir: 'experiments'  # Base directory for experiment outputs
+
+data:
+  data_dir: '/home/andrea/git/UCLA/UCLA_MATH156_Project/KingsCollege'
+  train_file: 'dataset_train.txt'
+  val_file: 'dataset_test.txt'  # Optional
+  batch_size: 64
+  num_workers: 4
+
+model:
+  type: 'baselines.VGG16'
+
+optimizer:
+  type: 'Adam'
+  params:
+    lr: 1.0e-4
+
+scheduler:  # Optional
+  type: 'ReduceLROnPlateau'
+  params:
+    mode: 'min'
+    factor: 0.5
+    patience: 5
+    min_lr: 1.0e-6
+
+loss:
+  type: 'utils.CameraPoseLoss'
+  params: 
+    s_x: 0
+    s_q: -3
+    trainable: True
+    norm: 2
+
+# data_normalization: # Won't do this just yet
+
+epochs: 50
+device: 'cuda'  # 'cuda' or 'cpu'

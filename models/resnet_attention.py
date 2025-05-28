@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from data_preparation import PoseDataset
 import importlib
+
 KERNAL_SIZE = 7
 
 # Channel Attention Module
@@ -23,6 +23,7 @@ class ChannelAttention(nn.Module):
         avg_out = self.shared_MLP(self.avg_pool(x))
         max_out = self.shared_MLP(self.max_pool(x))
         return self.sigmoid(avg_out + max_out) * x
+    
 
 
 # Spatial Attention Module
@@ -40,9 +41,10 @@ class SpatialAttention(nn.Module):
         max_out, _ = torch.max(x, dim=1, keepdim=True)
         x_cat = torch.cat([avg_out, max_out], dim=1)         # [B,2,H,W]
         return self.sigmoid(self.conv(x_cat)) * x
+    
 
 
-# Combined CBAM
+# Combined ChannelAttention and SpatialAttention
 class CBAM(nn.Module):
     def __init__(self, in_planes, ratio=16, kernel_size=7):
         super().__init__()
@@ -53,8 +55,9 @@ class CBAM(nn.Module):
         x = self.ca(x)
         x = self.sa(x)
         return x
-    
-  
+
+
+# CBAM block
 class BasicBlockWithCBAM(nn.Module):
     expansion = 1
 
@@ -88,8 +91,46 @@ class BasicBlockWithCBAM(nn.Module):
         out = self.relu(out)
         return out
 
+
+# PoseRegressor Module
+class PoseRegressor(nn.Module):
+    """ A simple MLP to regress a pose component"""
+
+    def __init__(self, decoder_dim, output_dim, use_prior=False):
+        """
+        decoder_dim: (int) the input dimension
+        output_dim: (int) the outpur dimension
+        use_prior: (bool) whether to use prior information
+        """
+        super().__init__()
+        ch = 1024
+        self.fc_h = nn.Linear(decoder_dim, ch)
+        self.use_prior = use_prior
+        if self.use_prior:
+            self.fc_h_prior = nn.Linear(decoder_dim * 2, ch)
+        self.fc_o = nn.Linear(ch, output_dim)
+        self._reset_parameters()
+
+    def _reset_parameters(self):
+        for p in self.parameters():
+            if p.dim() > 1:
+                nn.init.xavier_uniform_(p)
+
+    def forward(self, x):
+        """
+        Forward pass
+        """
+        if self.use_prior:
+            x = F.gelu(self.fc_h_prior(x))
+        else:
+            x = F.gelu(self.fc_h(x))
+
+        return self.fc_o(x)
+
+
+# ResNet with CBAM
 class ResNetCBAM(nn.Module):
-    def __init__(self, block_name, layers, num_outputs=7):
+    def __init__(self, block_name, layers, pos_dim=3, orien_dim=4):
         super().__init__()
 
         block_path, block_name = block_name.rsplit('.', 1)
@@ -109,7 +150,9 @@ class ResNetCBAM(nn.Module):
         self.layer4 = self._make_layer(block_class, 512, layers[3], stride=2)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(512 * block_class.expansion, num_outputs)
+
+        self.pos_fc = PoseRegressor(512 * block_class.expansion, pos_dim)
+        self.orien_fc = PoseRegressor(512 * block_class.expansion, orien_dim)
 
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None
@@ -139,5 +182,9 @@ class ResNetCBAM(nn.Module):
 
         x = self.avgpool(x)  # -> [B, 512, 1, 1]
         x = torch.flatten(x, 1)
-        x = self.fc(x)  # → regression output
-        return x
+
+        # Split position and orientation head
+        position = self.pos_fc(x)
+        orientation = self.orien_fc(x)
+
+        return torch.cat([position, orientation], dim=1)

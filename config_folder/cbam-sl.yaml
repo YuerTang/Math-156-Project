@@ -8,7 +8,11 @@ data:
   num_workers: 4
 
 model:
-  type: 'baselines.VGG16'
+  type: 'models.ResNetCBAM'
+  params:
+    block_name: 'models.BasicBlockWithCBAM'
+    layers: [2, 2, 2, 2]  # ResNet18-like
+    num_outputs: 7
 
 optimizer:
   type: 'Adam'
@@ -24,10 +28,10 @@ scheduler:  # Optional
     min_lr: 1.0e-6
 
 loss:
-  type: 'MSELoss'
-  beta: 3.0
-
-# data_normalization: # Won't do this just yet
+  type: 'utils.StaticLoss'
+  params:
+    beta: 3.0
+    loss: 'torch.nn.MSELoss'
 
 epochs: 50
 device: 'cuda'  # 'cuda' or 'cpu'

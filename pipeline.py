@@ -27,8 +27,9 @@ class Trainer:
     def _create_experiment_dir(self):
         # Create a unique directory for this experiment
         model_name = self.config['model']['type'].split('.')[-1]
+        loss_name = self.config['loss']['type'].split('.')[-1]
         timestamp = time.strftime("%Y%m%d_%H%M%S")
-        exp_dir = Path(self.config.get('output_dir', 'experiments')) / f"{model_name}_{timestamp}"
+        exp_dir = Path(self.config.get('output_dir', 'experiments')) / f"{model_name}_{loss_name}_{timestamp}"
         os.makedirs(exp_dir, exist_ok=True)
         
         # Save the config to the experiment directory
@@ -56,6 +57,10 @@ class Trainer:
         # Modification
         # Setup loss
         self.loss_fnc = self._get_loss()
+        # print(self.loss_fnc)
+        if isinstance(self.loss_fnc, nn.Module):
+            self.loss_fnc.to(self.device)
+            pass
 
 
 
@@ -120,7 +125,7 @@ class Trainer:
         module_path, class_name = loss_cfg['type'].rsplit('.', 1)
         module = importlib.import_module(module_path)
         loss_class = getattr(module, class_name)
-        return loss_class(**loss_class.get('params', dict()))
+        return loss_class(**loss_cfg.get('params', dict()))
     
 
 
@@ -210,22 +215,20 @@ class Trainer:
                 self.scheduler.step(val_loss if val_loss is not None else train_loss)
                 pass
             pass
-            
 
+            # # Modification 
+            # # Early Stopping
+            # avg_validation_loss = np.mean(self.history['val_loss'])
 
-            # Modification 
-            # Early Stopping
-            avg_validation_loss = np.mean(self.history['val_loss'])
+            # if avg_validation_loss < best_val_loss - min_delta:
+            #     best_val_loss = avg_validation_loss
+            #     epochs_no_improve = 0
+            # else:
+            #     epochs_no_improve += 1
 
-            if avg_validation_loss < best_val_loss - min_delta:
-                best_val_loss = avg_validation_loss
-                epochs_no_improve = 0
-            else:
-                epochs_no_improve += 1
-
-            if epochs_no_improve == patience:
-                print(f"Early stopping at epoch {epoch + 1}")
-                break
+            # if epochs_no_improve == patience:
+            #     print(f"Early stopping at epoch {epoch + 1}")
+            #     break
 
             
 
