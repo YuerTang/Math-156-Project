@@ -14,15 +14,34 @@ This repository presents our final project for UCLA’s MATH 156 course. We impr
 ---
 
 ## 🗂️ Project Structure
-
 ```
-├── configs/                # YAML config files for each experiment
-├── data_preparation.py    # Dataset loading and preprocessing
-├── pipeline.py            # Main training script
-├── main.ipynb             # Sample experiment notebook
-├── figures/               # Loss curve visualizations
-├── utils/                 # Custom loss functions and CBAM modules
-└── README.md              # This documentation
+.
+├── baselines/                     # Backbone model definitions
+│   ├── ResNet50.py
+│   ├── VGG16.py
+│   └── __init__.py
+│
+├── config_folder/                # YAML config files for experiments
+│   ├── cbam-ll.yaml              # CBAM + Learned Loss
+│   ├── cbam-sl.yaml              # CBAM + Static Loss
+│   ├── resnet50-ll.yaml          # ResNet50 + Learned Loss
+│   ├── resnet50-sl.yaml          # ResNet50 + Static Loss
+│   ├── vgg16-ll.yaml             # VGG16 + Learned Loss
+│   └── vgg16-sl.yaml             # VGG16 + Static Loss
+│
+├── models/                       # Attention model and architecture
+│   ├── __init__.py
+│   └── resnet_attention.py
+│
+│   └── utils/                    # Custom loss functions
+│       ├── __init__.py
+│       └── losses.py
+│
+├── data_preparation.py           # Dataset class and preprocessing
+├── pipeline.py                   # Training script (main entry point)
+├── main.ipynb                    # Jupyter notebook for demo/testing
+├── README.md                     # Project overview and documentation
+├── .gitignore                    # Git ignore file
 ```
 
 ---
