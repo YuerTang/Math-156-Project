@@ -5,7 +5,6 @@ This repository presents our final project for UCLA’s MATH 156 course. We impr
 Full Report: [here](Math156_Final_Report.pdf)
 
 ---
----
 
 ## 🚀 Highlights
 
