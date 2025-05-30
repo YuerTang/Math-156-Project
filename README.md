@@ -78,12 +78,8 @@ Loss curves show:
 
 
 ## 📚 References
-The inituition and implementation of ResNet with CBAM are from the papers [CBAM: Convolutional Block Attention Module](https://arxiv.org/abs/1807.06521) and [ASA for Multi-Scene APR: Activating Self-Attention for Multi-Scene Absolute Pose Regression](https://arxiv.org/abs/2411.01443)
-- Kendall et al., *PoseNet*  
-  [https://arxiv.org/abs/1505.07427](https://arxiv.org/abs/1505.07427)
-
-- Woo et al., *CBAM: Convolutional Block Attention Module*  
-  [https://arxiv.org/abs/1807.06521](https://arxiv.org/abs/1807.06521)
+The inituition and implementation of ResNet with CBAM are from the papers [CBAM: Convolutional Block Attention Module](https://arxiv.org/abs/1807.06521) and [ASA for Multi-Scene APR: Activating Self-Attention for Multi-Scene Absolute Pose Regression](https://arxiv.org/abs/2411.01443).
+The camera pose estimation topic was inspired from [PoseNet: A Convolutional Network for Real-Time 6-DOF Camera Relocalization][https://arxiv.org/abs/1505.07427](https://arxiv.org/abs/1505.07427)
 
 ---
 
