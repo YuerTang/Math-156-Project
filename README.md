@@ -97,7 +97,7 @@ The camera pose estimation topic was inspired from [PoseNet: A Convolutional Net
 
 ## 📎 Report
 
-📄 You can find the full technical write-up [here](file:///Users/yuertang/Downloads/Math_156%20(2).pdf)
+📄 You can find the full technical write-up [here](docs/Math_156_Report.pdf)
 
 ---
 
