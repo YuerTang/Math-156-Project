@@ -67,13 +67,6 @@ Loss curves show:
 - **CBAM accelerates convergence** — loss drops faster in early epochs.  
 - **Better generalization** — ResNet+CBAM keeps training and validation loss close.  
 - **Learned CameraPoseLoss** outperforms static loss in both smoothness and final values.
-
-### 📉 Example Visualizations
-
-| Learned Loss Log | Static Loss Log |
-|------------------|-----------------|
-| ![learned](figures/Learned_Loss_Logarithmic.png) | ![static](figures/Static_Loss_Logarithmic.png) |
-
 ---
 
 
