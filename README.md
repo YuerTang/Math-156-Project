@@ -7,10 +7,9 @@ This repository presents our final project for UCLA’s MATH 156 course. We impr
 
 ## 🚀 Highlights
 
-- ✅ Replaces PoseNet’s VGG16 backbone with ResNet-18 and ResNet-50  
-- 🎯 Adds CBAM attention modules before each residual block  
-- 🧠 Compares learned vs. fixed loss weight (CameraPoseLoss vs. static MSE)  
-- 📉 Shows faster convergence and less overfitting in CBAM-enhanced models  
+- Replaces PoseNet’s VGG16 backbone with ResNet-50 pluse CBAM attention modules 
+- Compares learned vs. fixed loss weight (CameraPoseLoss vs. static MSE)  
+- Shows faster convergence and less overfitting in CBAM-enhanced models  
 
 ---
 
