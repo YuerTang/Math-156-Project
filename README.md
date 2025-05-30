@@ -42,7 +42,7 @@ pip install -r requirements.txt
 
 We use the **King’s College dataset** from the original PoseNet paper.
 
-- Make sure the dataset is downloaded.  
+- Make sure the dataset is downloaded from [here](https://www.repository.cam.ac.uk/items/53788265-cb98-42ee-b85b-7a0cbc8eddb3).  
 - Set the correct path in your config file under `configs/*.yaml`.
 
 ---
