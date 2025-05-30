@@ -2,7 +2,9 @@
 *A Lightweight Attention-Enhanced Backbone for Camera Pose Estimation*
 
 This repository presents our final project for UCLA’s MATH 156 course. We improve upon the original PoseNet framework by integrating the Convolutional Block Attention Module (CBAM) into a ResNet backbone for camera pose estimation. Our CBAM-augmented model demonstrates better convergence and generalization performance compared to baseline architectures like VGG16 and vanilla ResNet.
+Full Report: [here](Math156_Final_Report.pdf)
 
+---
 ---
 
 ## 🚀 Highlights
@@ -95,9 +97,5 @@ The camera pose estimation topic was inspired from [PoseNet: A Convolutional Net
 
 ---
 
-## 📎 Report
 
-📄 You can find the full technical write-up [here](Math156_Final_Report.pdf)
-
----
 
